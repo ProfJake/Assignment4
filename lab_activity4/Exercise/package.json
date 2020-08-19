@@ -1,0 +1,11 @@
+{
+    "author": "Jake Levy",
+    "name": "Exercise",
+    "version": "0.1.2",
+    "description": "Lab Actvitiy 3",
+    "main": "Exercise",
+    "dependencies": {},
+    "engines": {
+	"node": "*"
+    }
+}
