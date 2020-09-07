@@ -28,8 +28,27 @@ Output: Calories Burned
 //Constructor for the tracker Class.  
 class tracker extends events{
     constructor(exercise, weight, distance, time) {
-	super();
 
+	super();
+	if (!exercise){
+	    //if exercise is undefined (nothing has been passed in) set none of the variables.
+	    //make a default  undefined object for setting. Avoids error
+	    //works for this project because I am creating an empty tracker for educational purposes
+	    //for real work this is strongly not recommended
+	} else {
+	    
+	    try{
+		this.exercise= new Exercise(exercise);
+		this.weight = weight;
+		this.distance = distance;
+		this.time = time;
+	    } catch (err){
+		console.log(err);
+		throw (err);
+	    }
+		
+
+	}
     }
     //updated to accomodate swimming
     calculate() {
