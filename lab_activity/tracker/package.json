@@ -1,0 +1,13 @@
+{
+    "author": "Jake Levy",
+    "name": "tracker",
+    "version": "0.1.5",
+    "description": "our 4th Activity.  Changes: Another syntactic change, this time to ES6. ",
+    "main": "trackerService",
+    "dependencies": {
+        "Exercise": "file:../Exercise"
+    },
+    "engines": {
+        "node": "*"
+    }
+}
