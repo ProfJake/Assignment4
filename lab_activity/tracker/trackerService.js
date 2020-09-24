@@ -1,5 +1,5 @@
 var events = require("events");
-var Exercise = require("Exercise");
+var Exercise = require("./Exercise.js");
 //var emitter = new events.EventEmitter();
 
 /*trackerService.js
@@ -31,10 +31,14 @@ class tracker extends events{
 
 	super();
 	if (!exercise){
-	    //if exercise is undefined (nothing has been passed in) set none of the variables.
 	    //make a default  undefined object for setting. Avoids error
 	    //works for this project because I am creating an empty tracker for educational purposes
 	    //for real work this is strongly not recommended
+	    //and instead should throw an ERROR.
+	    this.exercise = new Exercise("walking");
+	    this.weight  = 0;
+	    this.time  = 0;
+	    this.distance = 0;
 	} else {
 	    
 	    try{
@@ -43,7 +47,7 @@ class tracker extends events{
 		this.distance = distance;
 		this.time = time;
 	    } catch (err){
-		console.log(err);
+		console.log(err.message);
 		throw (err);
 	    }
 		
@@ -66,7 +70,7 @@ class tracker extends events{
 	try{
 	    this.exercise=new Exercise(exercise);
 	} catch (err){
-	    console.log("Error recieved setting the Exercise");
+	    console.log("ERR Tracker setExercise");
 	    throw err;
 	}
 	this.emit('exerciseChanged');

@@ -1,3 +1,7 @@
+/*
+activityTracker.js v-0.1.4
+Jake Levy
+Sept 2020*/
 var tracker = require("tracker");
 var events = require("events");
 var readline = require("readline");
@@ -7,70 +11,16 @@ const reader = readline.createInterface({
     output: process.stdout // std out as the reader's output/writable stream
 });
 
-//Notice something interesting here about the current var.  I have access to it
-//in the menu function EVEN though it is declared "for the first time" AFTER
-//menu.
-
-//This is because var declarations have what is known as "function scope".  They are
-//initialized with a value of "undefined" when used, if they not yet been declared.
-//This means that they are accessible (even if undefined) in their enclosing
-//scope before they are declared.
-
-//Another available declaration statement is "let", as in "let x = 5;"
-//let declarations have only "block scope", meaning they are only available
-//within the block in which they are defined.
-
-//Here I don't call menu until after I have declared and defined "current".
-//So by the time menu is called, current has the correct value.
-//current is available because it was declared with var.
-
-var menu = function(){
-				
-    reader.question('Do you want to start over with a new (a)ctivity, (c)hange your current entry, (s)tore current activity and start over, (v)iew all activities or (e)xit?', answer=>{
-
-	var letter = answer.toLowerCase()[0];
-	switch (letter){
-	case "a":
-	   
-	    response();//recall this function and start over again
-	    break;
-	    
-	case "c":
-	    //change the current activity
-	    changeMenu();
-	    break;  //Without break, this falls through & exits BEFORE setExercise completes
-
-	case "s":
-	    exArr.push(current);
-	    response();
-	    break;
-	case "v":
-	
-	    menu();
-	    break;
-	case "e":
-
-	    
-	    exArr.push(current);
-	    viewAllEx();
-	    //Activity
-	    //on exit write the array of Exercises to a local file
-	    console.log("Bye!");
-	    process.exit(0);
-	    //no break needed cause exit, duh
-	default:
-	    console.log("Unrecognized Option");
-	    menu();
-	    
-	}
-    });
-}
-		   
+var exArr = [];
+var current;
+//A printing function that demonstrates how to use a forEach loop
+//and callback
 var viewAllEx = function(){
     count=0;
     exArr.forEach(value => {
 	console.log(`Activity ${count+1}: ${value.getExercise()}`);
-	console.log(`Calories:  ${value.calculate()} `);
+	console.log(`Calories:  ${value.calculate()}`);
+	console.log(`Speed:     ${value.calcSpeed()}`);
 	count++;
     });
 }
@@ -119,13 +69,75 @@ var changeMenu = function(){
 	    });
 
 }
-var exArr = [];
-var current;
+
+
+var menu = function(){
+
+    reader.question('Do you want to start over with a new (a)ctivity, (c)hange your current entry, (s)tore current activity to the array, (v)iew all activities or (e)xit?', answer=>{
+
+	var letter = answer.toLowerCase()[0];
+	switch (letter){
+	case "a":
+	   
+	    response();//recall this function and start over again
+	    break;
+	    
+	case "c":
+	    //change the current activity
+	    changeMenu();
+	    break;  //Without break, this falls through & exits BEFORE setExercise completes
+//
+	case "s":
+	    exArr.push(current);
+	    menu();
+	    break;
+	case "v":
+	    if (exArr.length > 0){
+		viewAllEx();
+	    } else{
+		console.log("No Workouts to view");
+	    }
+	    menu();
+	    break;
+
+	case "w":
+	    /*YOUR CODE HERE
+	    Activity:
+	    add code that will write the array of Exercises to a local file
+	    Based on our discussion of local files and streams in Node:
+	    Add a function that opens a file named myExercises for 'appending'.
+	    Then stringify the array(chapter 5), and write it to myExercises (chapter 6).
+	    Make sure to "clear" the array after it successfully writes.
+	    */
+	    break;
+	    
+	case "e":
+	    
+	    
+	    viewAllEx();
+	    console.log("Bye!");
+	    process.exit(0);
+	    //no break needed cause exit, duh
+	default:
+	    console.log("Unrecognized Option");
+	    menu();
+	    
+	}
+    });
+}
+
 var response = function(){
     //now that the constructor has been reduced to an empty/default, we could add all
     //the event listeners immediately if we wanted to
     current = new tracker();
 
+
+    /*
+      YOUR CODE HERE:
+      Here you should add some code to see if there is a file named myExercises that exists
+      in the local folder (chapter 6). If so,open it, read and  parse the contents (chapter 6),
+    and push them into the local exArr array. In other words, load them.*/
+    
     reader.question('What actvity did you perform? \
 (Walking/Running/Swimming)', act => {
    
@@ -142,10 +154,25 @@ var response = function(){
 				console.log(`Calories Burned: ${current.calculate()}`);
 
 				 current.on('exerciseChanged', () => {
-				    console.log("Exercise Changed!");
-				    console.log(`Calories Burned: ${current.calculate()}`);
+				     console.log("Exercise Changed!");
+				     
+				     console.log("Recalculating");
+				     console.log(`Updated Calories: ${current.calculate()}`);
 				 });
-				
+				current.on('weightChanged', () => {
+				    console.log("Recalculating");
+				    console.log(`Updated Calories: ${current.calculate()}`);
+				});
+				current.on('distanceChanged', () => {
+				    console.log("Recalculating");
+				    console.log(`Updated Calories: ${current.calculate()}`);
+				    console.log(`Updated Speed: ${current.calcSpeed()}`);
+				});
+				current.on('timeChanged', () => {
+				    console.log("Recalculating");
+				    console.log(`Updated Calories: ${current.calculate()}`);
+				    console.log(`Updated Speed: ${current.calcSpeed()}`);
+				});			
 				menu();
 				
 			    })
@@ -153,16 +180,6 @@ var response = function(){
     })
 })
 }
-
-//Actvity:
-// Based on our discussion of local files and streams in Node:
-//Add a function that checks to see if a file named myExercises exists already
-//If not, your function should create it and then proceed with the rest of the program.
-//If it does exist, read the file contents and store them in exArr array (restore all
-//previously entered exercises). Then proceed with the rest of the program.
-
-//Upon exiting, your program should store the contents of the exArr into the file
-//as binary data (overwriting the previous contents of the file if it already exists)
 
 response();  //start the response function
 

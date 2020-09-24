@@ -1,18 +1,16 @@
 {
     "author": "Jake Levy",
     "name": "ActivityTracker",
-    "version": "0.1.1",
+    "version": "0.1.4",
     "description": "our 4th Activity.  Changes: Packed the entire thing",
     "main": "activityTracker",
     "dependencies": {
-        "tracker": "file:../tracker"
+        "tracker": "file:../tracker/tracker-0.1.5.tgz"
     },
     "scripts": {
-	"start":"node activityTracker.js"
+        "start": "node activityTracker.js"
     },
     "engines": {
         "node": "*"
     }
 }
-
-
